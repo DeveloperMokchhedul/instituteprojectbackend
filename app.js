@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 import rateLimit from 'express-rate-limit';
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -14,10 +14,32 @@ const app = express();
 dbConnected();
 
 // Global Application Middleware
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true,
+// }));
+
+// const cors = require("cors");
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://institutebookcycle.netlify.app"
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+
+
+
+
 app.use(express.json({ limit: MAX_JSON_SIZE }));
 app.use(express.urlencoded({ extended: URL_ENCODED }));
 app.use(hpp());
