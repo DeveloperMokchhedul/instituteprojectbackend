@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 const userSchema =new mongoose.Schema({
-    username:{
+    name:{
         type:String,
         required:true,
         lowercase:true,
@@ -14,7 +14,7 @@ const userSchema =new mongoose.Schema({
         required: true,
         index:true
     },
-    fullName:{
+    password:{
         type: String,
         required: true,
         trim : true,
@@ -26,13 +26,13 @@ const userSchema =new mongoose.Schema({
         enum:["seller","user"],
         default:"user"
     },
-    avatar:{
+    image:{
         type:String,
         required:true,
     },
-    password:{
+    phone:{
         type:String,
-        required:[true,"password is required"]
+        required:true
     }
 },{
    timestamps:true 

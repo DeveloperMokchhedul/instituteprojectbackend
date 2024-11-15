@@ -9,10 +9,10 @@ import { uploadOnCloudinary } from "../utility/cloudinary.js"
 
 const registerUser = asyncHandler(async(req,res)=>{
 
-const {fullName,email,username,password, role} = req.body
+const {name,email,phone,password, role} = req.body
 
-console.log(fullName, email, username, password,role)
-if(!fullName && !email && !username && !password && !role){
+console.log(name, email, phone, password,role)
+if(!name && !email && !phone && !password && !role){
     throw new ApiError(400,"all fields are required")
 }
 
@@ -28,7 +28,7 @@ if (existedUser) {
 
 //4th step 
 
-const avatarLocalPath= req.files?.avatar[0]?.path
+const avatarLocalPath= req.files?.image[0]?.path
 
 
 console.log("local file path is",avatarLocalPath)
@@ -49,11 +49,11 @@ if(!avatar){
 
 
 const user = await User.create({
-    fullName:fullName,
+    name:name,
     email,
     password,
-    username: username.toLowerCase(),
-    avatar:avatar.url,
+    phone,
+    image:avatar.url,
     role
 })
 
@@ -77,6 +77,8 @@ const loginUser = asyncHandler(
     async(req,res)=>{
 
 const {email, password,role} = req.body
+console.log(email, password, role);
+
 
 
 //2nd step

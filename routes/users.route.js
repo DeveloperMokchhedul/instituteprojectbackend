@@ -7,7 +7,7 @@ import { isAuthenticate } from "../app/middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.post("/registration", upload.fields([{ name: "avatar", maxCount: 1 }]),  registerUser);
+router.post("/registration", upload.fields([{ name: "image", maxCount: 1 }]),  registerUser);
 router.post("/login", loginUser);
 router.get("/logout",isAuthenticate, logOut);
 

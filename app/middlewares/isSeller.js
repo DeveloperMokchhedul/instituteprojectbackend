@@ -1,6 +1,6 @@
 import { ApiError } from "../utility/ApiError.js";
 
-export const isAdmin = (req, res, next) => {
+export const isSeller = (req, res, next) => {
     if (!req.user) {
         throw new ApiError(401, "User not registered");
     }

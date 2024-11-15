@@ -2,16 +2,28 @@ import mongoose from "mongoose";
 
 const productShema = mongoose.Schema({
 
-    title:{
+    bookname:{
         type:String,
-        required:true,
+        required:true
     },
-    description:{
+    price:{
         type:String,
         required:true,
-    },    
+    },  
+    semister:{
+        type:String,
+        required:true,
+    },  
+    department:{
+        type:String,
+        required:true,
+    },  
+    description:{
+        type:String
+    },  
+
     productImage:{
-        type:String,//cloudinary url
+        type:String,
         required: true,
     },
     productOwner:{
