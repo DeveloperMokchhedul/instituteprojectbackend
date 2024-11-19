@@ -1,0 +1,53 @@
+import mongoose from "mongoose";
+
+const orderSchema = mongoose.Schema({
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
+    district: {
+        type: String,
+        required: true,
+    },
+    city: {
+        type: String,
+        required: true,
+    },
+    zip: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
+    totalprice: {
+        type: Number, 
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Shipped', 'Delivered'],
+        default: 'Pending',
+    },
+    bookId:{
+        type:[String],
+        required:true
+    },
+    book: {
+        type: [String], 
+        required: true
+    },
+    orderby: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+}, {
+    timestamps: true,
+});
+
+export const Order = mongoose.model('Order', orderSchema);

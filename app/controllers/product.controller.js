@@ -93,6 +93,28 @@ const getAllProduct = asyncHandler(async (req, res) => {
 
 
 
+const findByOwner = asyncHandler(async(req,res)=>{
+
+  const ownerId = req.user._id;
+
+  if (!ownerId) {
+    throw new ApiError(400, "Owner ID is missing");
+  }
+
+  const products = await Product.find({ productOwner: ownerId });
+
+  if (!products.length) {
+    throw new ApiError(404, "No products found for this owner");
+  }
+  return res
+  .status(200)
+  .json(new ApiResponse(200, products, "Product retrieved successfully"));
+
+})
+
+
+
+
 
 const getProductById = asyncHandler(async (req, res) => {
   const { productId } = req.params;
@@ -104,6 +126,8 @@ const getProductById = asyncHandler(async (req, res) => {
   const productData = await Product.findById(productId).populate(
     "productOwner"
   );
+  console.log("productOwner Data is ", productData);
+  
   
 
   if (!productData) {
@@ -114,6 +138,12 @@ const getProductById = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, productData, "Product retrieved successfully"));
 });
+
+
+
+
+
+
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
@@ -168,13 +198,15 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const { productId } = req.params;
+  const { id } = req.params;
+  console.log(id);
+  
 
-  if (!productId.trim()) {
+  if (!id.trim()) {
     throw new ApiError(404, "product missiong missing");
   }
 
-  const product = await Product.findById(productId);
+  const product = await Product.findById(id);
 
   if (!product) {
     throw new ApiError(400, "product not found in db");
@@ -186,7 +218,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     console.log("product file deleted from cloudinary successfully");
   }
 
-  const removeProduct = await Product.findByIdAndDelete(productId);
+  const removeProduct = await Product.findByIdAndDelete(id);
 
   if (!removeProduct) {
     throw new ApiError(500, "something went wrong while deleting product");
@@ -204,4 +236,5 @@ export {
   getProductById,
   updateProduct,
   deleteProduct,
+  findByOwner
 };

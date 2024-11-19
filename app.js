@@ -9,6 +9,7 @@ import { MONGODB_CONNECTION, PORT, MAX_JSON_SIZE, URL_ENCODED, WEB_CACHE, REQUES
 import { dbConnected } from './app/utility/db.js';
 import userRouter from "./routes/users.route.js";
 import productRoute from "./routes/product.route.js";
+import orderRoute from "./routes/orderRoute.js";
 
 const app = express();
 dbConnected();
@@ -61,6 +62,7 @@ app.set('etag', WEB_CACHE);
 
 app.use("/api/user", userRouter);
 app.use("/api/product", productRoute);
+app.use("/api/order", orderRoute);
 
 // Run Your Express Back End Project
 app.listen(PORT, () => {
