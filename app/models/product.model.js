@@ -26,11 +26,14 @@ const productShema = mongoose.Schema({
         type:String,
         required: true,
     },
+    isSold: { type: Boolean, default: false },
+
     productOwner:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"User"
 
-    }
+    },
+    
 },{
     timestamps:true, 
 })

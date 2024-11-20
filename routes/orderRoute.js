@@ -10,7 +10,7 @@ router.get("/find",isAuthenticate, findOrderById);
 router.get("/all", AllOrder);
 router.get("/findbyowner",isAuthenticate, getMyProductOrders);
 router.delete("/delete/:id", deleteOrder);
-router.patch("/orders/:orderId/status",isAuthenticate, updateOrderStatus);
+router.put("/orders/:orderId/status",isAuthenticate, updateOrderStatus);
 
 
 export default router;

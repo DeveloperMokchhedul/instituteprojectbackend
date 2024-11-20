@@ -16,18 +16,7 @@ const createOrder = asyncHandler(async (req, res) => {
     bookId,
     totalprice,
   } = req.body;
-  console.log("id is ", req.user._id);
 
-  console.log(
-    firstname,
-    lastname,
-    district,
-    city,
-    zip,
-    phone,
-    book,
-    totalprice
-  );
   if (
     !firstname &&
     !lastname &&
@@ -82,9 +71,7 @@ const findOrderById = asyncHandler(async (req, res) => {
 
   const deleteOrder = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    console.log("order id is ", id);
 
-    console.log("delete order page");
     
     
   
@@ -130,17 +117,17 @@ const findOrderById = asyncHandler(async (req, res) => {
     const ownerId = req.user._id;
 
     const myProducts = await Product.find({ productOwner: ownerId });
-    console.log("my product is ", myProducts);
+
     
   
 
     const productIds = myProducts.map(product => product._id);
-    console.log(" porduct id is ", productIds);
+
     
   
   
     const myOrders = await Order.find({ bookId: { $in: productIds } });
-    console.log("myorder is ", myOrders);
+
     
     
     
@@ -152,26 +139,35 @@ const findOrderById = asyncHandler(async (req, res) => {
     return res.status(200).json({ message: "Orders found", myOrders });
   });
   
-
   const updateOrderStatus = asyncHandler(async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
+
   
-  
-    const allowedStatuses = ["pending", "processing", "completed", "canceled"]; 
+    const allowedStatuses = ['pending', 'shipped', 'delivered'];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
   
-
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
   
-  
+    // Update order status
     order.status = status;
     await order.save();
+  
+    // If status is delivered, update the product to isSold: true
+    if (status === 'delivered') {
+      const product = await Product.findById(order.bookId);
+      console.log("product is ", product);
+      
+      if (product) {
+        product.isSold = true;
+        await product.save();
+      }
+    }
   
     return res.status(200).json({
       message: "Order status updated successfully",
