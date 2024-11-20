@@ -10,7 +10,6 @@ import { uploadOnCloudinary } from "../utility/cloudinary.js"
 const registerUser = asyncHandler(async(req,res)=>{
 
 const {name,email,phone,password, role} = req.body
-
 console.log(name, email, phone, password,role)
 if(!name && !email && !phone && !password && !role){
     throw new ApiError(400,"all fields are required")

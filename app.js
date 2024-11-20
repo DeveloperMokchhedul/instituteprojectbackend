@@ -24,9 +24,9 @@ dbConnected();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://institutebookcycle.netlify.app"
+  "https://instituteproject.netlify.app", 
+  "https://instituteprojectbackend.onrender.com"
 ];
-
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
