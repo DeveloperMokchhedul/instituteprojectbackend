@@ -11,15 +11,18 @@ export const isAuthenticate = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "Unauthorized request");
   }
 
-  const decodedToken = jwt.verify(token, "mokchhedulislam");
+  try {
+    const decodedToken = jwt.verify(token, "mokchhedulislam");
 
-  const user = await User.findById(decodedToken?._id).select("-password");
+    const user = await User.findById(decodedToken?._id).select("-password");
 
-  if (!user) {
-    throw new ApiError(401, "Invalid token");
+    if (!user) {
+      throw new ApiError(401, "Invalid token");
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    throw new ApiError(401, "Invalid or expired token");
   }
-
-  req.user = user;
-
-  next()
 });
