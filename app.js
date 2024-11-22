@@ -22,21 +22,33 @@ dbConnected();
 
 // const cors = require("cors");
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://institutebookcycle.netlify.app"
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://bookcycle-qdl4.onrender.com"
+// ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// }));
+
+
+
+const cors = require('cors');
+const corsOptions = {
+    origin: 'https://instituteproject.netlify.app', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true, 
+};
+
+app.use(cors(corsOptions));
+
 
 
 

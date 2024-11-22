@@ -56,33 +56,27 @@ const registerProduct = asyncHandler(async (req, res) => {
     );
 });
 
+
+
+
+
+
+
 const getNewReleaseProduct = asyncHandler(async (req, res) => {
   const AllProduct = await Product.find();
+  console.log(AllProduct);
+  
   return res.status(200).json({
     message: "all product found",
     AllProduct,
   });
 });
 
+
+
+
+
 const getAllProduct = asyncHandler(async (req, res) => {
-  const allProducts = await Product.aggregate([
-    {
-      $match: { productOwner: req.user._id },
-    },
-  ]);
-
-  const totalProduct = await Product.aggregate([
-    {
-      $group: {
-        _id: null,
-        totalProduct: { $sum: 1 },
-      },
-    },
-  ]);
-  console.log("total product is ", totalProduct);
-
-  console.log("allProduct is ", allProducts);
-
   const allProduct = await Product.find();
   res.status(200).json({
     message: "all product fined",

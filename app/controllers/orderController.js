@@ -6,8 +6,8 @@ import { Product } from "../models/product.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
   const {
-    firstname,
-    lastname,
+    name,
+    email,
     district,
     city,
     zip,
@@ -17,9 +17,12 @@ const createOrder = asyncHandler(async (req, res) => {
     totalprice,
   } = req.body;
 
+  console.log(name, email, district,city, zip, phone, book, bookId, totalprice);
+  
+
   if (
-    !firstname &&
-    !lastname &&
+    !name &&
+    !email &&
     !district &&
     !city &&
     !zip &&
@@ -28,11 +31,11 @@ const createOrder = asyncHandler(async (req, res) => {
     !bookId &&
     !totalprice
   ) {
-    throw new ApiError(500, "all field ar required");
+    throw new ApiError(500, "all field ar required !!!!");
   }
   const newOrder = await Order.create({
-    firstname,
-    lastname,
+    name,
+    email,
     district,
     city,
     zip,

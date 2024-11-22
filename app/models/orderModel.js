@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema({
-    firstname: {
+    name: {
         type: String,
         required: true
     },
-    lastname: {
+    email: {
         type: String,
         required: true,
     },
