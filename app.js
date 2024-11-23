@@ -41,12 +41,13 @@ dbConnected();
 
 
 const corsOptions = {
-    origin: 'https://instituteproject.netlify.app', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-    credentials: true, 
+  origin: ['https://instituteproject.netlify.app', 'https://institutebookcycle.netlify.app'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  credentials: true, 
 };
 
 app.use(cors(corsOptions));
+
 
 
 
