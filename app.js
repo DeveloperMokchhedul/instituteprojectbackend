@@ -41,7 +41,7 @@ dbConnected();
 
 
 const corsOptions = {
-  origin: ['https://bookcycle-qdl4.onrender.com',"https://institutebookcycle.netlify.app"], 
+  origin: ['https://bookcycle-qdl4.onrender.com',"https://institutebookcycle.netlify.app","http://localhost:5173"], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true, 
 };
