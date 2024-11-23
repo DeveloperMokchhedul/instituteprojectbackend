@@ -39,7 +39,7 @@ import multer from "multer"
 const storage = multer.diskStorage({
     //to upload file on destionation
     destination:function(req,file,cb){
-            cb(null,"./upload")
+            cb(null,"/images")
     },
 
     
