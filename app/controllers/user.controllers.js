@@ -75,19 +75,19 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(
     async (req, res) => {
 
-        const { email, password, role } = req.body
-        console.log(email, password, role);
+        const { email, password } = req.body
+        console.log(email, password);
 
 
 
         //2nd step
-        if (!email || !password || !role) {
-            throw new ApiError(400, "email,password and role are required")
+        if (!email || !password ) {
+            throw new ApiError(400, "email and password  are required")
         }
 
 
 
-        const user = await User.findOne({ email, role })
+        const user = await User.findOne({ email })
 
 
         //3rd step 
@@ -233,49 +233,136 @@ const updateAccountDetails = asyncHandler(
 )
 
 
-const updateUserAvatar = asyncHandler(
-    async (req, res) => {
-        const avatarLocalPath = req.file?.path
-
-        if (!avatarLocalPath) {
-            throw new ApiError(404, "avatar file is not send")
-        }
-
-        const avatar = await uploadOnCloudinary(avatarLocalPath)
-
-        if (!avatar.url) {
-            throw new ApiError(500, "Error while uploading avatar on cloudinary")
-        }
 
 
-        const user = await User.findByIdAndUpdate(
-            req.user._id,
-            {
-                $set: {
-                    avatar: avatar.url
-                }
-            }, {
-            new: true
-        }
-        ).select("-password -refreshToken ")
 
-        if (!user) {
-            throw new ApiError(500, "something went wrong in server")
-        }
-
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(200, user, "avatar file uploaded successfully")
-            )
-
+const updateUserRole = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { role } = req.body;
+  
+    console.log("Received user ID:", _id, "and role:", role);
+  
+    // Validate role
+    if (!role) {
+      return res.status(400).json({ message: "Role is required." });
     }
-)
+    if (!["user", "seller"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role specified." });
+    }
+  
+    // Find user
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+  
+    // Update and save role
+    console.log("Current role:", user.role);
+    user.role = role;
+  
+    try {
+      await user.save();
+      console.log("Updated role successfully:", user.role);
+    } catch (error) {
+      console.error("Error saving user:", error);
+      return res.status(500).json({ message: "Failed to update role." });
+    }
+  
+    // Return updated user
+    return res.status(200).json({
+      message: "Role updated successfully",
+      updatedUser: user,
+    });
+  });
+  
+
+
+
+
+
+
+
+
+
+
+
+
+// const updateUserAvatar = asyncHandler(
+//     async (req, res) => {
+//         const avatarLocalPath = req.file?.path
+
+//         if (!avatarLocalPath) {
+//             throw new ApiError(404, "avatar file is not send")
+//         }
+
+//         const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+//         if (!avatar.url) {
+//             throw new ApiError(500, "Error while uploading avatar on cloudinary")
+//         }
+
+
+//         const user = await User.findByIdAndUpdate(
+//             req.user._id,
+//             {
+//                 $set: {
+//                     avatar: avatar.url
+//                 }
+//             }, {
+//             new: true
+//         }
+//         ).select("-password -refreshToken ")
+
+//         if (!user) {
+//             throw new ApiError(500, "something went wrong in server")
+//         }
+
+//         return res
+//             .status(200)
+//             .json(
+//                 new ApiResponse(200, user, "avatar file uploaded successfully")
+//             )
+
+//     }
+// )
+
+
+
+
+
+
+// const updateUserRole = asyncHandler(async (req, res) => {
+//     const {_id} = req.user
+//     const { role } = req.body;
+
+//     console.log("user id is", _id, "role is", role);
+
+//     const user = await User.findById(_id);
+//     console.log("user is ", user);
+
+//     if (!user) {
+//       return res.status(404).json({ message: "user not found" });
+//     }
+    
+//      user.role = role;
+//     await user.save();
+
+//     console.log(user);
+    
+
+//     console.log("user is ", user);
+//     return res.status(200).json({
+//       message: "role updated successfully",
+//       updatedUser: user,
+//     });
+//   });
+  
+
 
 
 
 export {
-    registerUser, loginUser, logOut, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar
+    registerUser, loginUser, logOut, changeCurrentPassword, getCurrentUser, updateAccountDetails,updateUserRole
 
 
 }
