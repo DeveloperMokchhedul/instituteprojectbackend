@@ -65,7 +65,7 @@ const registerProduct = asyncHandler(async (req, res) => {
 const getNewReleaseProduct = asyncHandler(async (req, res) => {
   const AllProduct = await Product.find();
   console.log(AllProduct);
-  
+
   return res.status(200).json({
     message: "all product found",
     AllProduct,
@@ -87,7 +87,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
 
 
 
-const findByOwner = asyncHandler(async(req,res)=>{
+const findByOwner = asyncHandler(async (req, res) => {
 
   const ownerId = req.user._id;
 
@@ -101,8 +101,8 @@ const findByOwner = asyncHandler(async(req,res)=>{
     throw new ApiError(404, "No products found for this owner");
   }
   return res
-  .status(200)
-  .json(new ApiResponse(200, products, "Product retrieved successfully"));
+    .status(200)
+    .json(new ApiResponse(200, products, "Product retrieved successfully"));
 
 })
 
@@ -121,8 +121,8 @@ const getProductById = asyncHandler(async (req, res) => {
     "productOwner"
   );
   console.log("productOwner Data is ", productData);
-  
-  
+
+
 
   if (!productData) {
     throw new ApiError(400, "Product not found");
@@ -137,64 +137,82 @@ const getProductById = asyncHandler(async (req, res) => {
 
 
 
-
-
 const updateProduct = asyncHandler(async (req, res) => {
-  const { productId } = req.params;
-  const { title, description } = req.body;
-  const productLocalPath = req.file.path;
+  const { id } = req.params;
+  const { bookname, price, semister, department, description } = req.body;
 
-  if (!title || !description | !productImage) {
+  const productPath = req.files?.productImage?.[0]?.path;
+  console.log("Uploaded file path is:", productPath);
+  console.log("Product details:", bookname, price, semister, department, description);
+
+  if (!bookname || !price || !semister || !department || !description) {
     throw new ApiError(400, "All fields are required");
   }
 
-  const productPhoto = await uploadOnCloudinary(productLocalPath);
 
-  if (!productPhoto) {
-    throw new ApiError(404, "something daaaaaa went wrong");
-  }
-
-  const product = await Product.findById(productId);
-
+  const product = await Product.findById(id);
   if (!product) {
-    throw new ApiError(400, "product not found");
+    throw new ApiError(400, "Product not found");
   }
 
-  const response = await cloudinary.uploader.destroy(Product.productImage);
+  let updatedProductImage = product.productImage;
 
-  if (response) {
-    console.log("old thumbnail deleted successfully");
+  if (productPath) {
+
+    const productPhoto = await uploadOnCloudinary(productPath);
+    console.log("New product image uploaded:", productPhoto);
+
+    if (productPhoto) {
+      updatedProductImage = productPhoto.url;
+
+
+      const response = await cloudinary.uploader.destroy(product.productImage);
+      if (response) {
+        console.log("Old product image deleted from Cloudinary");
+      }
+    }
   }
 
-  const updateProduct = await Product.findByIdAndUpdate(
-    productId,
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    id,
     {
       $set: {
-        title,
+        bookname,
+        price,
+        semister,
+        department,
         description,
-        productImage: productImage.url,
+        productImage: updatedProductImage,
       },
     },
-    {
-      new: true,
-    }
+    { new: true }
   );
 
-  if (!updateProduct) {
-    throw new ApiError(500, "something went wrong while updating");
+  if (!updatedProduct) {
+    throw new ApiError(500, "Something went wrong while updating the product");
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, updateVideo, "product details updated successfully")
+      new ApiResponse(200, updatedProduct, "Product details updated successfully")
     );
 });
+
+
+
+
+
+
+
+
+
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   console.log(id);
-  
+
 
   if (!id.trim()) {
     throw new ApiError(404, "product missiong missing");
@@ -220,7 +238,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, [], "product deleted successfully"));
+    .json(new ApiResponse(200, "product update successfully"));
 });
 
 export {

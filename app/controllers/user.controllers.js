@@ -1,5 +1,4 @@
 
-// import mongoose from "mongoose"
 import { User } from "../models/user.model.js"
 import { ApiError } from "../utility/ApiError.js"
 import { ApiResponse } from "../utility/ApiResponse.js"
@@ -9,23 +8,20 @@ import { uploadOnCloudinary } from "../utility/cloudinary.js"
 
 const registerUser = asyncHandler(async (req, res) => {
 
-    const { name, email, phone, password, role } = req.body
-    console.log(name, email, phone, password, role)
-    if (!name && !email && !phone && !password && !role) {
+    const { name, email, phone, password } = req.body
+    console.log(name, email, phone, password)
+    if (!name || !email || !phone || !password) {
         throw new ApiError(400, "all fields are required")
     }
 
 
     //3rd 
-    const existedUser = await User.findOne({ email, role });
+    const existedUser = await User.findOne({ email });
 
     if (existedUser) {
-        throw new ApiError(400, "User with the same email and role already exists");
+        throw new ApiError(400, "User with the same email already exists");
     }
 
-
-
-    //4th step 
 
     const avatarLocalPath = req.files?.image[0]?.path
 
@@ -80,8 +76,8 @@ const loginUser = asyncHandler(
 
 
 
-        //2nd step
-        if (!email || !password ) {
+
+        if (!email || !password) {
             throw new ApiError(400, "email and password  are required")
         }
 
@@ -90,7 +86,7 @@ const loginUser = asyncHandler(
         const user = await User.findOne({ email })
 
 
-        //3rd step 
+
         if (!user) {
             throw new ApiError(404, "user is not found")
         }
@@ -98,19 +94,13 @@ const loginUser = asyncHandler(
         console.log(user);
 
 
-        //4th step
+
         const isPasswordValid = await user.isPasswordCorrect(password)
 
 
         if (!isPasswordValid) {
             throw new ApiError(401, "Invalid password")
         }
-
-
-
-        //5th step 
-
-
 
         const token = await user.generateToken()
 
@@ -239,42 +229,42 @@ const updateAccountDetails = asyncHandler(
 const updateUserRole = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { role } = req.body;
-  
+
     console.log("Received user ID:", _id, "and role:", role);
-  
-    // Validate role
+
+
     if (!role) {
-      return res.status(400).json({ message: "Role is required." });
+        return res.status(400).json({ message: "Role is required." });
     }
     if (!["user", "seller"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role specified." });
+        return res.status(400).json({ message: "Invalid role specified." });
     }
-  
-    // Find user
+
+
     const user = await User.findById(_id);
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+        return res.status(404).json({ message: "User not found." });
     }
-  
-    // Update and save role
+
+
     console.log("Current role:", user.role);
     user.role = role;
-  
+
     try {
-      await user.save();
-      console.log("Updated role successfully:", user.role);
+        await user.save();
+        console.log("Updated role successfully:", user.role);
     } catch (error) {
-      console.error("Error saving user:", error);
-      return res.status(500).json({ message: "Failed to update role." });
+        console.error("Error saving user:", error);
+        return res.status(500).json({ message: "Failed to update role." });
     }
-  
-    // Return updated user
+
+
     return res.status(200).json({
-      message: "Role updated successfully",
-      updatedUser: user,
+        message: "Role updated successfully",
+        updatedUser: user,
     });
-  });
-  
+});
+
 
 
 
@@ -343,12 +333,12 @@ const updateUserRole = asyncHandler(async (req, res) => {
 //     if (!user) {
 //       return res.status(404).json({ message: "user not found" });
 //     }
-    
+
 //      user.role = role;
 //     await user.save();
 
 //     console.log(user);
-    
+
 
 //     console.log("user is ", user);
 //     return res.status(200).json({
@@ -356,13 +346,13 @@ const updateUserRole = asyncHandler(async (req, res) => {
 //       updatedUser: user,
 //     });
 //   });
-  
+
 
 
 
 
 export {
-    registerUser, loginUser, logOut, changeCurrentPassword, getCurrentUser, updateAccountDetails,updateUserRole
+    registerUser, loginUser, logOut, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserRole
 
 
 }

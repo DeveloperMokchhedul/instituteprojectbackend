@@ -50,7 +50,7 @@ const createOrder = asyncHandler(async (req, res) => {
       message: "order placed successfully",
       newOrder,
     }
-    //   new ApiResponse(201, registerProduct, "order created successfully")
+    
   );
 });
 
@@ -159,11 +159,11 @@ const findOrderById = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
   
-    // Update order status
+    
     order.status = status;
     await order.save();
   
-    // If status is delivered, update the product to isSold: true
+    
     if (status === 'delivered') {
       const product = await Product.findById(order.bookId);
       console.log("product is ", product);
