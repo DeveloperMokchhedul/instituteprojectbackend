@@ -49,7 +49,6 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
         phone,
         image: avatar.url,
-        role
     })
 
 
